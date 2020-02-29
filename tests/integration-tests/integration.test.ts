@@ -18,9 +18,9 @@ MMRMMRMRRM`;
         grid.placeRover(rover.position, rover.direction, rover.commands);
     }
 
-    while(grid.next());
+    while(grid.next()) {}
 
-    var placedRovers = grid.getPlacedRovers();
+    const placedRovers = grid.getPlacedRovers();
 
     expect(placedRovers[0].rover.position).toEqual(new Position(1, 3));
     expect(placedRovers[0].rover.direction).toEqual(Direction.North);
