@@ -6,6 +6,10 @@ class Position {
         this.x = x;
         this.y = y;
     }
+
+    equals(other : Position) {
+        return this.x == other.x && this.y == other.y;
+    }
 }
 
 export default Position;

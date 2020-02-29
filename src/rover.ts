@@ -11,38 +11,59 @@ class Rover {
         this._grid = grid;
     }
 
-    moveFrom(x: number, y: number) {
-        let potentialPosition = this.getPotentialPosition(x, y);
-        if (this._grid.isOnGrid(potentialPosition.x, potentialPosition.y)) {
+    moveFrom(position: Position) {
+        let potentialPosition = this.getPotentialPosition(position);
+        if (this._grid.isAvailableOnGrid(potentialPosition)) {
             return potentialPosition;
         }
-        return new Position(x, y);
+        return position;
     }
 
-    private getPotentialPosition(x: number, y: number) {
+    private getPotentialPosition(position: Position) {
         switch (this._direction) {
             case Direction.North:
-                return new Position(x, y + 1);
+                return new Position(position.x, position.y + 1);
             case Direction.East:
-                return new Position(x + 1, y);
+                return new Position(position.x + 1, position.y);
             case Direction.South:
-                return new Position(x, y - 1);
+                return new Position(position.x, position.y - 1);
             case Direction.West:
-                return new Position(x - 1, y);
+                return new Position(position.x - 1, position.y);
         }
     }
 
     rotateLeft() {
-        if (this._direction === Direction.North) {
-            this._direction = Direction.West;
-        } else if (this._direction === Direction.East) {
-            this._direction = Direction.North;
+        switch (this._direction) {
+            case Direction.North:
+                this._direction = Direction.West;
+                break;
+            case Direction.East:
+                this._direction = Direction.North;
+                break;
+            case Direction.South:
+                this._direction = Direction.East;
+                break;
+            case Direction.West:
+                this._direction = Direction.South;
+                break;
         }
-
     }
 
     rotateRight() {
-        this._direction = Direction.East;
+        switch (this._direction) {
+            case Direction.North:
+                this._direction = Direction.East;
+                break;
+            case Direction.East:
+                this._direction = Direction.South;
+                break;
+            case Direction.South:
+                this._direction = Direction.West;
+                break;
+            case Direction.West:
+                this._direction = Direction.North;
+                break;
+        }
     }
 }
 
