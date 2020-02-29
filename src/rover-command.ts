@@ -1,7 +1,8 @@
 enum RoverCommand {
     TurnLeft,
     TurnRight,
-    Move
+    Move,
+    None
 }
 
 export default RoverCommand;

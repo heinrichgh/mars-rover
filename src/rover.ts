@@ -5,30 +5,39 @@ import Position from "./position";
 class Rover {
     private _direction: Direction;
     private readonly _grid: Grid;
+    private _position: Position;
 
-    constructor(direction: Direction, grid: Grid) {
+    get direction() : Direction {
+        return this._direction;
+    }
+
+    get position() : Position {
+        return this._position;
+    }
+
+    constructor(direction: Direction, position: Position, grid: Grid) {
         this._direction = direction;
         this._grid = grid;
+        this._position = position;
     }
 
-    moveFrom(position: Position) {
-        let potentialPosition = this.getPotentialPosition(position);
+    move() {
+        let potentialPosition = this.getPotentialPosition();
         if (this._grid.isAvailableOnGrid(potentialPosition)) {
-            return potentialPosition;
+            this._position = potentialPosition;
         }
-        return position;
     }
 
-    private getPotentialPosition(position: Position) {
+    private getPotentialPosition() {
         switch (this._direction) {
             case Direction.North:
-                return new Position(position.x, position.y + 1);
+                return new Position(this._position.x, this._position.y + 1);
             case Direction.East:
-                return new Position(position.x + 1, position.y);
+                return new Position(this._position.x + 1, this._position.y);
             case Direction.South:
-                return new Position(position.x, position.y - 1);
+                return new Position(this._position.x, this._position.y - 1);
             case Direction.West:
-                return new Position(position.x - 1, position.y);
+                return new Position(this._position.x - 1, this._position.y);
         }
     }
 

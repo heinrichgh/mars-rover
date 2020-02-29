@@ -9,12 +9,12 @@ test.each([
     [8, 1],
 ])('north facing rover at coordinates (%i, %i), should move one position north', (x, y) => {
     const grid = new Grid(x, y * 2);
-    const rover = new Rover(Direction.North, grid);
+    const rover = new Rover(Direction.North, new Position(x, y), grid);
 
-    const newPosition = rover.moveFrom(new Position(x, y));
+    rover.move();
 
-    expect(newPosition.x).toBe(x);
-    expect(newPosition.y).toBe(y + 1);
+    expect(rover.position.x).toBe(x);
+    expect(rover.position.y).toBe(y + 1);
 });
 
 test.each([
@@ -23,12 +23,12 @@ test.each([
     [8, 1],
 ])('east facing rover at coordinates (%i, %i), should move one position east', (x, y) => {
     const grid = new Grid(x * 2, y);
-    const rover = new Rover(Direction.East, grid);
+    const rover = new Rover(Direction.East, new Position(x, y), grid);
 
-    const newPosition = rover.moveFrom(new Position(x, y));
+    rover.move();
 
-    expect(newPosition.x).toBe(x + 1);
-    expect(newPosition.y).toBe(y);
+    expect(rover.position.x).toBe(x + 1);
+    expect(rover.position.y).toBe(y);
 });
 
 test.each([
@@ -37,12 +37,12 @@ test.each([
     [8, 1],
 ])('south facing rover at coordinates (%i, %i), should move one position south', (x, y) => {
     const grid = new Grid(x, y);
-    const rover = new Rover(Direction.South, grid);
+    const rover = new Rover(Direction.South, new Position(x, y), grid);
 
-    const newPosition = rover.moveFrom(new Position(x, y));
+    rover.move();
 
-    expect(newPosition.x).toBe(x);
-    expect(newPosition.y).toBe(y - 1);
+    expect(rover.position.x).toBe(x);
+    expect(rover.position.y).toBe(y - 1);
 });
 
 test.each([
@@ -51,12 +51,12 @@ test.each([
     [8, 1],
 ])('west facing rover at coordinates (%i, %i), should move one position west', (x, y) => {
     const grid = new Grid(x, y);
-    const rover = new Rover(Direction.West, grid);
+    const rover = new Rover(Direction.West, new Position(x, y), grid);
 
-    const newPosition = rover.moveFrom(new Position(x, y));
+    rover.move();
 
-    expect(newPosition.x).toBe(x - 1);
-    expect(newPosition.y).toBe(y);
+    expect(rover.position.x).toBe(x - 1);
+    expect(rover.position.y).toBe(y);
 });
 
 test.each([
@@ -65,12 +65,12 @@ test.each([
     [8, 1],
 ])('north facing rover on northern border should stay at current position when asked to move', (x, y) => {
     const grid = new Grid(x, y);
-    const rover = new Rover(Direction.North, grid);
+    const rover = new Rover(Direction.North, new Position(x, y), grid);
 
-    const newPosition = rover.moveFrom(new Position(x, y));
+    rover.move();
 
-    expect(newPosition.x).toBe(x);
-    expect(newPosition.y).toBe(y);
+    expect(rover.position.x).toBe(x);
+    expect(rover.position.y).toBe(y);
 });
 
 test.each([
@@ -79,12 +79,12 @@ test.each([
     [8, 1],
 ])('east facing rover on eastern border should stay at current position when asked to move', (x, y) => {
     const grid = new Grid(x, y);
-    const rover = new Rover(Direction.East, grid);
+    const rover = new Rover(Direction.East, new Position(x, y), grid);
 
-    const newPosition = rover.moveFrom(new Position(x, y));
+    rover.move();
 
-    expect(newPosition.x).toBe(x);
-    expect(newPosition.y).toBe(y);
+    expect(rover.position.x).toBe(x);
+    expect(rover.position.y).toBe(y);
 });
 
 test.each([
@@ -93,12 +93,12 @@ test.each([
     [8],
 ])('south facing rover on southern border should stay at current position when asked to move', (x) => {
     const grid = new Grid(x, x);
-    const rover = new Rover(Direction.South, grid);
+    const rover = new Rover(Direction.South, new Position(x, 0), grid);
 
-    const newPosition = rover.moveFrom(new Position(x, 0));
+    rover.move();
 
-    expect(newPosition.x).toBe(x);
-    expect(newPosition.y).toBe(0);
+    expect(rover.position.x).toBe(x);
+    expect(rover.position.y).toBe(0);
 });
 
 test.each([
@@ -107,130 +107,74 @@ test.each([
     [8],
 ])('west facing rover on western border should stay at current position when asked to move', (y) => {
     const grid = new Grid(y, y);
-    const rover = new Rover(Direction.West, grid);
+    const rover = new Rover(Direction.West, new Position(0, y), grid);
 
-    const newPosition = rover.moveFrom(new Position(0, y));
+    rover.move();
 
-    expect(newPosition.x).toBe(0);
-    expect(newPosition.y).toBe(y);
+    expect(rover.position.x).toBe(0);
+    expect(rover.position.y).toBe(y);
 });
 
-test.each([
-    [5, 4,],
-    [2, 3],
-    [8, 1],
-])('north facing rover at coordinates (%i, %i), after turned left, should move one position west', (x, y) => {
-    const grid = new Grid(x, y);
-    const rover = new Rover(Direction.North, grid);
+test('north facing rover at coordinates (%i, %i), after turned left, should be facing west', () => {
+    const grid = new Grid(10, 10);
+    const rover = new Rover(Direction.North, new Position(0, 0), grid);
     rover.rotateLeft();
 
-    const newPosition = rover.moveFrom(new Position(x, y));
-
-    expect(newPosition.x).toBe(x - 1);
-    expect(newPosition.y).toBe(y);
+    expect(rover.direction).toBe(Direction.West);
 });
 
-test.each([
-    [5, 4,],
-    [2, 3],
-    [8, 1],
-])('north facing rover at coordinates (%i, %i), after turned right, should move one position east', (x, y) => {
-    const grid = new Grid(x * 2, y);
-    const rover = new Rover(Direction.North, grid);
+test('north facing rover at coordinates (%i, %i), after turned right, should be facing east', () => {
+    const grid = new Grid(10, 10);
+    const rover = new Rover(Direction.North, new Position(0, 0), grid);
     rover.rotateRight();
 
-    const newPosition = rover.moveFrom(new Position(x, y));
-
-    expect(newPosition.x).toBe(x + 1);
-    expect(newPosition.y).toBe(y);
+    expect(rover.direction).toBe(Direction.East);
 });
 
-test.each([
-    [5, 4,],
-    [2, 3],
-    [8, 1],
-])('east facing rover at coordinates (%i, %i), after turned left, should move one position north', (x, y) => {
-    const grid = new Grid(x, y * 2);
-    const rover = new Rover(Direction.East, grid);
+test('east facing rover at coordinates (%i, %i), after turned left, should be facing north', () => {
+    const grid = new Grid(10, 10);
+    const rover = new Rover(Direction.East, new Position(0, 0), grid);
     rover.rotateLeft();
 
-    const newPosition = rover.moveFrom(new Position(x, y));
-
-    expect(newPosition.x).toBe(x);
-    expect(newPosition.y).toBe(y + 1);
+    expect(rover.direction).toBe(Direction.North);
 });
 
-test.each([
-    [5, 4,],
-    [2, 3],
-    [8, 1],
-])('east facing rover at coordinates (%i, %i), after turned right, should move one position south', (x, y) => {
-    const grid = new Grid(x, y);
-    const rover = new Rover(Direction.East, grid);
+test('east facing rover at coordinates (%i, %i), after turned right, should be facing south', () => {
+    const grid = new Grid(10, 10);
+    const rover = new Rover(Direction.East, new Position(0, 0), grid);
     rover.rotateRight();
 
-    const newPosition = rover.moveFrom(new Position(x, y));
-
-    expect(newPosition.x).toBe(x);
-    expect(newPosition.y).toBe(y - 1);
+    expect(rover.direction).toBe(Direction.South);
 });
 
-test.each([
-    [5, 4,],
-    [2, 3],
-    [8, 1],
-])('south facing rover at coordinates (%i, %i), after turned left, should move one position east', (x, y) => {
-    const grid = new Grid(x * 2, y);
-    const rover = new Rover(Direction.South, grid);
+test('south facing rover at coordinates (%i, %i), after turned left, should be facing east', () => {
+    const grid = new Grid(10, 10);
+    const rover = new Rover(Direction.South, new Position(0, 0), grid);
     rover.rotateLeft();
 
-    const newPosition = rover.moveFrom(new Position(x, y));
-
-    expect(newPosition.x).toBe(x + 1);
-    expect(newPosition.y).toBe(y);
+    expect(rover.direction).toBe(Direction.East);
 });
 
-test.each([
-    [5, 4,],
-    [2, 3],
-    [8, 1],
-])('south facing rover at coordinates (%i, %i), after turned right, should move one position west', (x, y) => {
-    const grid = new Grid(x, y);
-    const rover = new Rover(Direction.South, grid);
+test('south facing rover at coordinates (%i, %i), after turned right, should be facing west', () => {
+    const grid = new Grid(10, 10);
+    const rover = new Rover(Direction.South, new Position(0, 0), grid);
     rover.rotateRight();
 
-    const newPosition = rover.moveFrom(new Position(x, y));
-
-    expect(newPosition.x).toBe(x - 1);
-    expect(newPosition.y).toBe(y);
+    expect(rover.direction).toBe(Direction.West);
 });
 
-test.each([
-    [5, 4,],
-    [2, 3],
-    [8, 1],
-])('west facing rover at coordinates (%i, %i), after turned left, should move one position south', (x, y) => {
-    const grid = new Grid(x, y);
-    const rover = new Rover(Direction.West, grid);
+test('west facing rover at coordinates (%i, %i), after turned left, should be facing south', () => {
+    const grid = new Grid(10, 10);
+    const rover = new Rover(Direction.West, new Position(0, 0), grid);
     rover.rotateLeft();
 
-    const newPosition = rover.moveFrom(new Position(x, y));
-
-    expect(newPosition.x).toBe(x);
-    expect(newPosition.y).toBe(y - 1);
+    expect(rover.direction).toBe(Direction.South);
 });
 
-test.each([
-    [5, 4,],
-    [2, 3],
-    [8, 1],
-])('west facing rover at coordinates (%i, %i), after turned right, should move one position north', (x, y) => {
-    const grid = new Grid(x, y * 2);
-    const rover = new Rover(Direction.West, grid);
+test('west facing rover at coordinates (%i, %i), after turned right, should be facing north', () => {
+    const grid = new Grid(10, 10);
+    const rover = new Rover(Direction.West, new Position(0, 0), grid);
     rover.rotateRight();
 
-    const newPosition = rover.moveFrom(new Position(x, y));
-
-    expect(newPosition.x).toBe(x);
-    expect(newPosition.y).toBe(y + 1);
+    expect(rover.direction).toBe(Direction.North);
 });
