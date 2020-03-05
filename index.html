@@ -36,7 +36,7 @@
 </head>
 <body>
 <div class="overlay" id="buttons">
-    <button class="btn btn-xs btn-outline-secondary">Actions</button>
+    <button class="btn btn-xs btn-outline-secondary" id="toggleActionsBtn">Actions</button>
 </div>
 <div id="actions" class="overlay">
     <div class="form-group">
@@ -46,11 +46,17 @@
     <div id="inputError" class="text-danger d-none mb-3">
     </div>
     <div id="notRunningActions">
-        <button id="btnStart" class="btn btn-xs btn-outline-success">Start</button>
+        <button id="btnInit" class="btn btn-xs btn-outline-success">Initialize</button>
     </div>
     <div id="runningActions" class="d-none">
-        <button id="btnPause" class="btn btn-xs btn-outline-warning">Pause</button>
+        <button id="btnPause" class="btn btn-xs btn-outline-warning">Start</button>
         <button id="btnStop" class="btn btn-xs btn-outline-danger">Stop</button>
+    </div>
+    <div class="mt-3">
+        <span class="text-primary">Current State</span>
+        <div id="output" class="text-info">
+            Awaiting State
+        </div>
     </div>
 </div>
 <canvas id="main-render-canvas"></canvas>

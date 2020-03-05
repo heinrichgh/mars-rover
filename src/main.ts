@@ -1,22 +1,17 @@
-import * as THREE from 'three';
-
 import InputParser from "./input-parser";
-import Grid from "./grid";
-import Direction from "./direction";
-import {Geometry, Mesh, Object3D} from "three";
+import {PlacedRover} from "./grid";
+import {DirectionToString} from "./direction";
 import Engine from "./engine";
 
 // TODO:
 // Mini-map
-// Input + run
 // Camera zoom out at the end?
-// Use nicer model instead of blocks
-// REFACTOR THIS FILE!
 
 
 
 ///////////////////////////////
-// const inputText = `5 5
+// const inputText = `
+// 5 5
 // 1 2 N
 // LMLMLMLMM
 // 3 3 E
@@ -36,18 +31,30 @@ import Engine from "./engine";
 const engine = new Engine();
 
 let inputCommandTextarea = <HTMLTextAreaElement>document.getElementById("commandInput");
+let actions = <HTMLTextAreaElement>document.getElementById("actions");
 let inputError = document.getElementById("inputError");
 let notRunningActions = document.getElementById("notRunningActions");
 let runningActions = document.getElementById("runningActions");
 
-let startButton = document.getElementById("btnStart");
-startButton.addEventListener("click", (event) => {
+let toggleActions = document.getElementById("toggleActionsBtn");
+let actionsShowing = true;
+toggleActions.addEventListener("click", (event) => {
+    actionsShowing = !actionsShowing;
+   if (actionsShowing) {
+       actions.classList.remove("d-none");
+   } else {
+       actions.classList.add("d-none");
+   }
+});
+
+let initButton = document.getElementById("btnInit");
+initButton.addEventListener("click", (event) => {
     inputError.classList.add("d-none");
     const inputText = inputCommandTextarea.value;
     const parser = new InputParser();
     try {
         const parsed = parser.parse(inputText);
-        engine.start(parsed);
+        engine.init(parsed);
         inputCommandTextarea.readOnly = true;
         notRunningActions.classList.add("d-none");
         runningActions.classList.remove("d-none");
@@ -74,6 +81,18 @@ stopButton.addEventListener("click", (event) => {
     runningActions.classList.add("d-none");
 });
 
+let output = document.getElementById("output");
+function updateOutput(placedRovers: PlacedRover[]) {
+    let outputString = "";
+
+    for (let placed of placedRovers) {
+        outputString += `${placed.rover.position.x} ${placed.rover.position.y} ${DirectionToString(placed.rover.direction)}<br>`
+    }
+
+    console.log(outputString);
+    output.innerHTML = outputString;
+}
+
 let last: number;
 let dt = 0;
 let step = 1 / 60.0;
@@ -85,7 +104,10 @@ function frame(now: number) {
 
     while (dt > step) {
         dt = dt - step;
-        engine.update(step);
+        let placedRovers = engine.update(step);
+        if (placedRovers) {
+            updateOutput(placedRovers);
+        }
     }
     engine.render();
     last = now;

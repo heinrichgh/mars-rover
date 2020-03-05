@@ -3,7 +3,7 @@ import Position from "./position";
 import Rover from "./rover";
 import RoverCommand from "./rover-command";
 
-interface PlacedRover {
+export interface PlacedRover {
     rover: Rover,
     commands: RoverCommand[]
 }
