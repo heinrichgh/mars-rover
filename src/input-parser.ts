@@ -13,7 +13,7 @@ interface ParsedRover {
     commands: RoverCommand[]
 }
 
-interface ParsedInput {
+export interface ParsedInput {
     grid: ParsedGrid,
     rovers: ParsedRover[]
 }
